@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+   http://www.springframework.org/schema/context
+   http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+    <!-- 开启注解 -->
+    <context:annotation-config></context:annotation-config>
+    <!-- 扫描包 -->
+    <context:component-scan base-package="com.test" />
+    <!--由于queryRunner是第三方提供的Jar包，不可以直接使用注解-->
+    <!--<bean id = "queryRunner" class="org.apache.commons.dbutils.QueryRunner">-->
+        <!--<constructor-arg name="ds" value="#{T(com.test.util.MyDbUtil).getDataSource()}"/>-->
+    <!--</bean>-->
+
+    <bean id = "queryRunner" class="org.apache.commons.dbutils.QueryRunner">
+        <constructor-arg name="ds" value="#{myDbUtil.getDataSource()}"/>
+    </bean>
+    <!--把MyDbUtils的static去掉创建对象-->
+    <bean id = "myDbUtil" class="com.test.util.MyDbUtil"/>
+
+    <bean id = "dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" lazy-init="true">
+        <constructor-arg name="configName" value="1903pool"/>
+    </bean>
+
+    <bean id = "itemsDao" class="com.test.dao.impl.ItensDaoImpl">
+        <!--<property name="queryRunner" ref="queryRunner"></property>-->
+    </bean>
+
+</beans>
